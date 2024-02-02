@@ -6,12 +6,15 @@ using UnityEngine;
 using System.IO;
 using System.Linq;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class IMUSimulator : MonoBehaviour
 {
     [SerializeField] private string _path;
     [SerializeField] private int targetSamplesPerSecond;
     [SerializeField] private Vector3 offset;
+    [SerializeField] private float intensity;
+    [SerializeField] private float speed;
     private List<Sample> CurrentSecondSamples = new List<Sample>();
     [SerializeField] private List<Sample> LoadedAngles = new List<Sample>();
 
@@ -102,7 +105,7 @@ public class IMUSimulator : MonoBehaviour
 
                 summedAngles = summedAngles / divisions;
                 Sample newtemp = new Sample();
-                newtemp.angles = summedAngles;
+                newtemp.angles = summedAngles + offset;
                 LoadedAngles.Add(newtemp);
             }
 
@@ -124,14 +127,23 @@ public class IMUSimulator : MonoBehaviour
 
     IEnumerator SimulateRoutine()
     {
-        float waitTime = 1f/targetSamplesPerSecond;
+        float waitTime = (1f/speed)/targetSamplesPerSecond;
         while (coCounter < LoadedAngles.Count)
         {
-            Vector3 newAngle = LoadedAngles[coCounter].angles + offset;
+            Vector3 delta = new Vector3();
+            if (coCounter==0)
+            {
+                delta = LoadedAngles[0].angles;
+            }
+            else
+            {
+                delta = (LoadedAngles[coCounter-1].angles - LoadedAngles[coCounter].angles)*intensity;
+            }
+            Vector3 newAngle = cube.rotation.eulerAngles + (delta);
             cube.rotation = Quaternion.Euler(newAngle);
 
             Debug.Log(
-                "Rotated to: " + LoadedAngles[coCounter].angles + " counter: " + coCounter + " Wait Time: " + waitTime);
+                "Rotated to: " + newAngle + " counter: " + coCounter + " Wait Time: " + waitTime);
             coCounter++;
             yield return new WaitForSeconds(waitTime);
         }
@@ -152,7 +164,4 @@ public class Sample
 {
     public int timeStampSec;
     public Vector3 angles;
-    public float AsX;
-    public float AsY;
-    public float AsZ;
 }

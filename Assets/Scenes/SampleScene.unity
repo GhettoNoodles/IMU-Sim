@@ -376,6 +376,8 @@ MonoBehaviour:
   _path: C:\Users\jacqu\Downloads\imu-data\test.txt
   targetSamplesPerSecond: 60
   offset: {x: -1.81, y: -1.36, z: 76.36}
+  intensity: 0
+  speed: 0
   cube: {fileID: 991829986}
 --- !u!65 &991829983
 BoxCollider:
@@ -486,8 +488,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _path: C:\Users\jacqu\Downloads\imu-data\test.txt
-  targetSamplesPerSecond: 120
+  targetSamplesPerSecond: 60
   offset: {x: -1.81, y: -1.36, z: 76.36}
+  intensity: 2
+  speed: 1
   cube: {fileID: 634342995}
 --- !u!1001 &1073185751
 PrefabInstance:
